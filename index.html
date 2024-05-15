@@ -37,7 +37,8 @@
 
         input[type="text"],
         input[type="file"],
-        input[type="date"] {
+        input[type="date"],
+        input[type="tel"] {
             width: calc(100% - 22px);
             padding: 8px;
             margin-bottom: 10px;
@@ -64,9 +65,10 @@
 
         .certificate {
             padding: 20px;
-            max-width: 600px;
-            height: 600px; 
+            max-width: 900px;
+            height: 800px; 
             margin: 20px auto;
+            margin-top: -250px;
             background-color: #fff;
             font-family: 'Times New Roman', Times, serif;
             display: flex;
@@ -83,7 +85,7 @@
         .details h1 {
             text-align: center;
             margin-bottom: 20px;
-            margin-left:30px ;
+            margin-left:20% ;
             font-size: 24px;
             text-decoration: underline;
         }
@@ -117,6 +119,9 @@
 
             <label for="email">Email:</label>
             <input type="text" id="email" name="email" placeholder="Enter Email">
+
+            <label for="mobile">Mobile Number:</label>
+            <input type="tel" id="mobile" name="mobile" placeholder="Enter Mobile Number">
 
             <label for="address">Address:</label>
             <input type="text" id="address" name="address" placeholder="Enter Address">
@@ -160,14 +165,27 @@
 
         function getContentInPDF() {
             // Access form elements
-            let name = document.getElementById('name').value;
-            let email = document.getElementById('email').value;
-            let address = document.getElementById('address').value;
-            let aadhaar = document.getElementById('aadhaar').value;
-            let fatherName = document.getElementById('fatherName').value;
-            let motherName = document.getElementById('motherName').value;
-            let dob = document.getElementById('dob').value;
-            let placeOfBirth = document.getElementById('placeOfBirth').value;
+            let name = document.getElementById('name').value.trim();
+            let email = document.getElementById('email').value.trim();
+            let mobile = document.getElementById('mobile').value.trim();
+            let address = document.getElementById('address').value.trim();
+            let aadhaar = document.getElementById('aadhaar').value.trim();
+            let fatherName = document.getElementById('fatherName').value.trim();
+            let motherName = document.getElementById('motherName').value.trim();
+            let dob = document.getElementById('dob').value.trim();
+            let placeOfBirth = document.getElementById('placeOfBirth').value.trim();
+
+            // Validate inputs
+            if (!name || !email || !mobile || !address || !aadhaar || !fatherName || !motherName || !dob || !placeOfBirth) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            // Validate mobile number
+            if (!/^\d{10}$/.test(mobile)) {
+                alert("Please enter a valid 10-digit mobile number.");
+                return;
+            }
 
             // Get the selected image file
             let image = document.getElementById('image').files[0];
@@ -180,6 +198,7 @@
                     <h1>BIRTH CERTIFICATE</h1>
                     <p><strong>Name:</strong> ${name}</p>
                     <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Mobile Number:</strong> ${mobile}</p>
                     <p><strong>Address:</strong> ${address}</p>
                     <p><strong>Aadhaar Number:</strong> ${aadhaar}</p>
                     <p><strong>Father's Name:</strong> ${fatherName}</p>
