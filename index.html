@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birth Certificate Form</title>
+    <!-- Include CSS styles -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        #container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #000;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            width: calc(100% - 22px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: none;
+            border-bottom: 1px solid #000;
+            background-color: transparent;
+            font-weight: bold;
+        }
+
+        input[type="button"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+        }
+
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <h3>Birth Certificate Application</h3>
+        <form id="form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter Name">
+
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" placeholder="Enter Email">
+
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" placeholder="Enter Address">
+
+            <label for="comment">Additional Information:</label>
+            <input type="text" id="comment" name="comment" placeholder="Any Additional Information">
+
+            <label for="dob">Date of Birth:</label>
+            <input type="text" id="dob" name="dob" placeholder="Enter Date of Birth">
+
+            <label for="placeOfBirth">Place of Birth:</label>
+            <input type="text" id="placeOfBirth" name="placeOfBirth" placeholder="Enter Place of Birth">
+
+            <!-- Input for image -->
+            <label for="image">Upload Photo:</label>
+            <input type="file" id="image" name="image">
+
+            <!-- Button to generate PDF -->
+            <input type="button" value="Generate Birth Certificate" onclick="getContentInPDF()">
+        </form>
+    </div>
+
+    <!-- Include html2pdf.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        function getContentInPDF() {
+            // Access form elements
+            let name = document.getElementById('name').value;
+            let email = document.getElementById('email').value;
+            let address = document.getElementById('address').value;
+            let comment = document.getElementById('comment').value;
+            let dob = document.getElementById('dob').value;
+            let placeOfBirth = document.getElementById('placeOfBirth').value;
+
+            // Get the selected image file
+            let image = document.getElementById('image').files[0];
+
+            // Create a single HTML element by adding form data
+            let element = document.createElement('div');
+            element.innerHTML = `
+            <style>
+                .certificate {
+                    border: 2px solid #000;
+                    padding: 20px;
+                    border-radius: 10px;
+                    max-width: 600px;
+                    margin: 20px auto;
+                    background-color: #fff;
+                    font-family: 'Times New Roman', Times, serif;
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                .details {
+                    flex-basis: 60%;
+                    padding-right: 20px;
+                }
+                .details h1 {
+                    text-align: center;
+                    margin-bottom: 20px;
+                    font-size: 24px;
+                    text-decoration: underline;
+                }
+                .details p {
+                    margin-bottom: 10px;
+                    font-size: 18px;
+                }
+                .image-container {
+                    flex-basis: 35%;
+                    text-align: center;
+                    margin-top: 20px;
+                }
+                .image-container img {
+                    max-width: 100%;
+                    max-height: 250px;
+                    border-radius: 10px;
+                    border: 2px solid #000;
+                }
+            </style>
+            <div class="certificate">
+                <div class="details">
+                    <h1>BIRTH CERTIFICATE</h1>
+                    <p><strong>Name:</strong> ${name}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Address:</strong> ${address}</p>
+                    <p><strong>Additional Information:</strong> ${comment}</p>
+                    <p><strong>Date of Birth:</strong> ${dob}</p>
+                    <p><strong>Place of Birth:</strong> ${placeOfBirth}</p>
+                </div>
+                <div class="image-container">
+                    <img id="photo" alt="Photo">
+                </div>
+            </div>`;
+
+            let imgElement = element.querySelector('#photo');
+
+            // Load the image as a data URL
+            if (image) {
+                let reader = new FileReader();
+                reader.onload = function(event) {
+                    imgElement.src = event.target.result;
+                    // Generate PDF after image is loaded
+                    generatePDF();
+                };
+                reader.readAsDataURL(image);
+            } else {
+                // Generate PDF without the image
+                generatePDF();
+            }
+
+            // Function to generate PDF
+            function generatePDF() {
+                html2pdf().from(element).save();
+            }
+        }
+    </script>
+</body>
+
+</html>
